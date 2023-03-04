@@ -1,0 +1,21 @@
+<html>
+  <body>
+    <form name="f1">
+      Player(rock/scissors/paper):<input name="p" type="text" />
+      <input type="button" value="OK" onclick="javascript:play()" />
+    </form>
+  </body>
+</html>
+<script language="javascript">
+  function play() {
+    var player=f1.p.value;
+    if (player=="rock")
+      alert("Computer:paper\nYou lose");
+    else if (player=="paper")
+      alert("Computer:scissors\nYou lose");
+    else if (player=="scissors")
+      alert("Computer:rock\nYou lose");
+    else
+      alert("Incorrect input");
+  }
+</script>
