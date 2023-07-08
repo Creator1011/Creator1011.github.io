@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N-Puzzle</title>
+    <style>
+        .puzzle {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            width: 400px;
+        }
+
+        .tile {
+            width: 90px;
+            height: 90px;
+            background-color: #eee;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+    <div class="puzzle" id="puzzle"></div>
+
+    <script>
+        // 创建一个二维数组，表示初始状态的数字华容道
+        var initialBoard = shuffle([
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 11, 12],
+            [13, 14, 15, ""]
+        ]);
+
+        // 获取容器元素
+        var puzzle = document.getElementById("puzzle");
+
+        // 初始化游戏界面
+        function init() {
+            for (var i = 0; i < initialBoard.length; i++) {
+                for (var j = 0; j < initialBoard[i].length; j++) {
+                    var tile = document.createElement("div");
+                    tile.classList.add("tile");
+                    tile.innerHTML = initialBoard[i][j] === "" ? "" : initialBoard[i][j];
+                    tile.style.gridColumn = j + 1;
+                    tile.style.gridRow = i + 1;
+                    puzzle.appendChild(tile);
+                    tile.addEventListener("click", moveTile);
+                }
+            }
+        }
+
+        // 移动方块
+        function moveTile(event) {
+            var currentTile = event.target;
+            var emptyTile = document.querySelector(".tile:empty");
+
+            // 判断是否相邻，即是否可以移动
+            if (isAdjacent(currentTile, emptyTile)) {
+                swapTiles(currentTile, emptyTile);
+            }
+
+            // 检查是否完成游戏
+            if (isGameOver()) {
+                alert("恭喜你完成了游戏！");
+            }
+        }
+
+        // 判断两个方块是否相邻
+        function isAdjacent(tile1, tile2) {
+            var tile1Row = parseInt(tile1.style.gridRow);
+            var tile1Col = parseInt(tile1.style.gridColumn);
+            var tile2Row = parseInt(tile2.style.gridRow);
+            var tile2Col = parseInt(tile2.style.gridColumn);
+
+            return (
+                (Math.abs(tile1Row - tile2Row) === 1 && tile1Col === tile2Col) ||
+                (tile1Row === tile2Row && Math.abs(tile1Col - tile2Col) === 1)
+            );
+        }
+
+        // 交换两个方块的位置
+        function swapTiles(tile1, tile2) {
+            var tempRow = tile1.style.gridRow;
+            var tempCol = tile1.style.gridColumn;
+
+            tile1.style.gridRow = tile2.style.gridRow;
+            tile1.style.gridColumn = tile2.style.gridColumn;
+            tile2.style.gridRow = tempRow;
+            tile2.style.gridColumn = tempCol;
+        }
+
+        // 检查是否完成游戏
+        function isGameOver() {
+            var tiles = document.querySelectorAll(".tile");
+            var numbers = [];
+
+            for (var i = 0; i < tiles.length; i++) {
+                numbers.push(tiles[i].innerHTML);
+            }
+
+            return numbers.join("") === "123456789101112131415";
+        }
+
+        // 随机打乱二维数组的顺序
+        function shuffle(array) {
+            var currentIndex = array.length, randomIndex;
+
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        // 初始化游戏界面
+        init();
+    </script>
+</body>
+</html>
